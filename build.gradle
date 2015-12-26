@@ -1,48 +1,96 @@
+buildscript { 
+    repositories {
+       mavenCentral()
+    }
+    dependencies {
+       classpath 'org.gebish:geb-gradle:0.12.2'
+    }
+}
+
 apply plugin: "groovy"
-apply plugin: "idea"
+apply plugin: "geb-saucelabs"
+
+//def gebVersion = "0.10.0"
+//def seleniumVersion = "2.42.2"
+def gebVersion = "0.12.2"
+def seleniumVersion = "2.48.2"
+
+ext {
+  hostname = "localhost"
+//  hostname = 'ip-10-0-0-182'
+  drivers = ["chrome"]
+}
 
 repositories {
     mavenCentral()
+    maven { url "http://repository-saucelabs.forge.cloudbees.com/release" }
 }
 
-// The drivers we want to use
-ext.drivers = ["firefox"]
+dependencies { 
+//  sauceConnect "com.saucelabs:sauce-connect:3.0.28"
+  sauceConnect("com.saucelabs:ci-sauce:1.84") {
+    exclude module: 'sebuilder-interpreter'
+  }
+  sauceConnect "commons-io:commons-io:1.4"
+  
+  testCompile "org.gebish:geb-spock:$gebVersion"
+  testCompile "org.spockframework:spock-core:1.0-groovy-2.3"
+  
+  testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
+//  testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
+  testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
+//  testCompile "org.seleniumhq.selenium:selenium-ie-driver:$seleniumVersion"
 
-dependencies {
-    groovy "org.codehaus.groovy:groovy-all:1.8.6"
+//  testCompile "org.grails.plugins:geb:$gebVersion"
+//  testCompile "org.grails.plugins:geb-saucelabs:0.1"
 
-    def gebVersion = "0.9.0"
-    def seleniumVersion = "2.30.0"
+}
 
-    // If using Spock, need to depend on geb-spock
-    testCompile "org.gebish:geb-spock:$gebVersion"
-    testCompile "org.spockframework:spock-core:0.7-groovy-1.8"
-
-    // If using JUnit, need to depend on geb-junit (3 or 4)
-    testCompile "org.gebish:geb-junit4:$gebVersion"
-    testCompile "junit:junit-dep:4.8.2"
-
-    // Drivers
-    drivers.each { driver ->
-        testCompile "org.seleniumhq.selenium:selenium-$driver-driver:$seleniumVersion"
+sauceLabs {
+  account {
+       username = "horii03"
+       accessKey = "1dff5a82-1c94-4bec-bbe9-f37b0cb3ffa8"
+  }
+  connect {
+    port = 4445
+    if (project.hostname != "localhost") {
+      additionalOptions << '-t' << 'ip-10-0-0-182'
     }
+  }
 }
 
 drivers.each { driver ->
     task "${driver}Test"(type: Test) {
-        testReportDir = reporting.file("$name/tests")
-        testResultsDir = file("$buildDir/test-results/$name")
+//        reports {
+//            html.destination = reporting.file("$name/tests")
+//            junitXml.destination = file("$buildDir/test-results/$name")
+//        }
+
+//        outputs.upToDateWhen { false }  // Always run tests
 
         systemProperty "geb.build.reportsDir", reporting.file("$name/geb")
         systemProperty "geb.env", driver
-
-        // If you wanted to set the baseUrl in your build…
-        // systemProperty "geb.build.baseUrl", "http://myapp.com"
+        systemProperty "geb.saucelabs.browser", driver
+//        systemProperty "geb.saucelabs.browser", "chrome_windows 7_36"
+//        systemProperty "geb.saucelabs.browser", "chrome:windows 7:36"
     }
 }
 
-task test(overwrite: true, dependsOn: drivers.collect { tasks["${it}Test"] })
+def browser = [
+    [ browserName: 'chrome',            platform: 'Windows 7',   version:  '36' ]
+//    [ browserName: 'firefox',           platform: 'Windows 7',   version:  '31' ],
+//    [ browserName: 'internet explorer', platform: 'Windows 8.1', version:  '11' ]
+]
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.1'
+chromeTest {
+//    systemProperty "webdriver.chrome.driver", new File(unzipChromeDriver.outputs.files.singleFile, chromedriverFilename).absolutePath
+
+  dependsOn 'openSauceTunnelInBackground'
+  finalizedBy 'closeSauceTunnel'
+}
+
+test {
+//    dependsOn drivers.collect { tasks["${it}Test"] }
+    dependsOn drivers.collect { tasks["chromeTest"] }
+    enabled = false
 }
