@@ -68,9 +68,11 @@ drivers.each { driver ->
 
 //        outputs.upToDateWhen { false }  // Always run tests
 
+def sauceLabsBrowser = System.getenv("SAUCE_ONDEMAND_BROWSERS")
+
         systemProperty "geb.build.reportsDir", reporting.file("$name/geb")
         systemProperty "geb.env", driver
-        systemProperty "geb.saucelabs.browser", driver
+        systemProperty "geb.saucelabs.browser",    sauceLabsBrowser        
 //        systemProperty "geb.saucelabs.browser", "chrome_windows 7_36"
 //        systemProperty "geb.saucelabs.browser", "chrome:windows 7:36"
     }
