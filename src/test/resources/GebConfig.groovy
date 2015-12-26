@@ -1,42 +1,40 @@
-/*
-	This is the Geb configuration file.
-	
-	See: http://www.gebish.org/manual/current/configuration.html
-*/
-
 import org.openqa.selenium.remote.DesiredCapabilities
-import org.openqa.selenium.remote.RemoteWebDriver
-import org.openqa.selenium.Platform
-import org.openqa.selenium.firefox.FirefoxBinary
-import org.openqa.selenium.firefox.FirefoxDriver
-import org.openqa.selenium.firefox.FirefoxProfile
+import org.openqa.selenium.Dimension
+import geb.driver.SauceLabsDriverFactory
+import java.io.File
 
-
-waiting {
-    timeout = 5
-}
+import geb.report.CompositeReporter
+import geb.report.ScreenshotReporter
 
 environments {
-
-    // run via “./gradlew firefoxTest”
-    // See: http://code.google.com/p/selenium/wiki/FirefoxDriver
-    /*firefox {
-        capability = DesiredCapabilities.firefox()
-        capability.setPlatform(Platform.LINUX)
-        driver = {new RemoteWebDriver(new URL("http://master2-hd-data.domain:4444/wd/hub"), capability)}
-    }*/
-
-    firefox {
-        FirefoxBinary firefoxBinary = new FirefoxBinary()
-        firefoxBinary.setEnvironmentProperty("DISPLAY",":77")
-        firefoxBinary.setTimeout(20000l)
-        FirefoxProfile profile = new FirefoxProfile()
-
-        driver = {
-            new FirefoxDriver(firefoxBinary, profile)
-        }
+    chrome {
+          driver = {
+           def sauceLabsBrowser = System.getProperty("geb.saucelabs.browser")
+//             def sauceBrowser = "browserName=chrome,platform=Windows 7,version=38.0"
+//             def sauceBrowser = "chrome,Windows 7,38.0"
+//             def sauceBrowser = "browserName=chrome:platform=Windows 7:version=38.0"
+//             def sauceBrowser = "chrome:Windows 7:38.0"
+             def username = "horii03"
+             assert username
+             def accessKey = "1dff5a82-1c94-4bec-bbe9-f37b0cb3ffa8"
+             assert accessKey
+             new SauceLabsDriverFactory().create(sauceLabsBrowser, username, accessKey)
+          }
     }
 
 }
 
-// To run the tests with all browsers just run “./gradlew test”
+reporter = new CompositeReporter(
+    new ScreenshotReporter(){
+        @Override
+        protected escapeFileName(String name) {
+            name.replaceAll('[\\\\/:\\*?\\"&lt;>\\|]', '_')
+        }
+    },
+    new ScreenshotReporter(){
+        @Override
+        protected escapeFileName(String name) {
+            name.replaceAll('[\\\\/:\\*?\\"&lt;>\\|]', '_')
+        }
+    }
+)
