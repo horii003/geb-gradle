@@ -61,37 +61,12 @@ sauceLabs {
 
 drivers.each { driver ->
     task "${driver}Test"(type: Test) {
-//        reports {
-//            html.destination = reporting.file("$name/tests")
-//            junitXml.destination = file("$buildDir/test-results/$name")
-//        }
-
-//        outputs.upToDateWhen { false }  // Always run tests
-
-//def sauceLabsBrowser = System.getenv("SAUCE_ONDEMAND_BROWSERS")
-//println "XXX"
-//println sauceLabsBrowser
-//internetExplorer:Windows 8:10
-//browserName=chrome:platform=Windows 7:version=38.0
-//"browserName:internetExplorer, platform:Windows 7,  version:38.0"
-//OS: 'unspecified', Browser: 'internetexplorer, platform:windows 7,  version:38.0', Version: 'unspecified', Device: 'unspecified'
-//[ browserName: "internet explorer", version: "11", platform: "Windows 8.1" ]
-//{'{browserName': 'internet explorer, version=11, platform=Windows 8.1}'}
-//{ browserName: "chrome", version: "27", platform: [ "Windows 7" ] }
-def sauceLabsBrowser = "XXX"
+        def sauceLabsBrowser = "browserName:chrome\nplatform:Windows 7\nversion:38.0"
         systemProperty "geb.build.reportsDir", reporting.file("$name/geb")
         systemProperty "geb.env", driver
         systemProperty "geb.saucelabs.browser",    sauceLabsBrowser        
-//        systemProperty "geb.saucelabs.browser", "chrome_windows 7_36"
-//        systemProperty "geb.saucelabs.browser", "chrome:windows 7:36"
     }
 }
-
-def browser = [
-    [ browserName: 'chrome',            platform: 'Windows 7',   version:  '36' ]
-//    [ browserName: 'firefox',           platform: 'Windows 7',   version:  '31' ],
-//    [ browserName: 'internet explorer', platform: 'Windows 8.1', version:  '11' ]
-]
 
 chromeTest {
 //    systemProperty "webdriver.chrome.driver", new File(unzipChromeDriver.outputs.files.singleFile, chromedriverFilename).absolutePath
