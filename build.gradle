@@ -73,7 +73,9 @@ drivers.each { driver ->
 //println sauceLabsBrowser
 //internetExplorer:Windows 8:10
 //browserName=chrome:platform=Windows 7:version=38.0
-def sauceLabsBrowser = "browserName:internetExplorer, platform:Windows 7,  version:38.0"
+//"browserName:internetExplorer, platform:Windows 7,  version:38.0"
+//OS: 'unspecified', Browser: 'internetexplorer, platform:windows 7,  version:38.0', Version: 'unspecified', Device: 'unspecified'
+def sauceLabsBrowser = { browserName: "internet explorer", version: "11", platform: "Windows 8.1" }
         systemProperty "geb.build.reportsDir", reporting.file("$name/geb")
         systemProperty "geb.env", driver
         systemProperty "geb.saucelabs.browser",    sauceLabsBrowser        
