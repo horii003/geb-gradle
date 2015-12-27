@@ -61,7 +61,9 @@ sauceLabs {
 
 drivers.each { driver ->
     task "${driver}Test"(type: Test) {
-        def sauceLabsBrowser = "browserName:chrome\nplatform:Windows 7\nversion:38.0"
+//        def sauceLabsBrowser = "browserName:chrome\nplatform:Windows 7\nversion:38.0"
+        def sauceLabsBrowser = "browserName:microsoftedge\nplatform:Windows 10\nversion:20.10240"
+        
         systemProperty "geb.build.reportsDir", reporting.file("$name/geb")
         systemProperty "geb.env", driver
         systemProperty "geb.saucelabs.browser",    sauceLabsBrowser        
