@@ -71,7 +71,9 @@ drivers.each { driver ->
 //def sauceLabsBrowser = System.getenv("SAUCE_ONDEMAND_BROWSERS")
 //println "XXX"
 //println sauceLabsBrowser
-def sauceLabsBrowser = "iphone:OSX10.9, 7"
+//internetExplorer:Windows 8:10
+//browserName=chrome:platform=Windows 7:version=38.0
+def sauceLabsBrowser = "browserName:internetExplorer, platform:Windows 7,  version:38.0"
         systemProperty "geb.build.reportsDir", reporting.file("$name/geb")
         systemProperty "geb.env", driver
         systemProperty "geb.saucelabs.browser",    sauceLabsBrowser        
