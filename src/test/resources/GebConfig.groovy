@@ -20,7 +20,8 @@ Properties props = new Properties()
 props.setProperty("browserName","chrome")
 props.setProperty("platform","Windows 7")
 props.setProperty("version","38.0")
-           def sauceLabsBrowser = "sauce.config"
+
+           def sauceLabsBrowser = "browserName:chrome\nplatform:Windows 7\nversion:38.0"
 
              def username = "horii03"
              assert username
