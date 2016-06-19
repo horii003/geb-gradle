@@ -16,8 +16,8 @@ def gebVersion = "0.12.2"
 def seleniumVersion = "2.48.2"
 
 ext {
-  hostname = "localhost"
-//  hostname = 'ip-10-0-0-182'
+//  hostname = "localhost"
+  hostname = 'ip-10-0-0-182'
   drivers = ["chrome"]
 }
 
